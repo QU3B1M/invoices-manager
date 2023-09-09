@@ -5,13 +5,16 @@ FROM python:3.11
 WORKDIR /code
 
 # 
+RUN apt-get install libpq-dev -y
+
+# 
 COPY ./requirements.txt /code/requirements.txt
 
 # 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 # 
-COPY ./src /code/src
+COPY ./app /code/app
 
 # 
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
