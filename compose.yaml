@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres
+    restart: always
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
@@ -22,3 +23,14 @@ services:
       - READER_DB_URL=postgresql+asyncpg://postgres:postgres@db:5432/postgres
       - DEBUG=1
       - SECRET_KEY=secret
+
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - db
+      - backend
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=postgres@postgres.com
+      - PGADMIN_DEFAULT_PASSWORD=postgres
+    ports:
+      - "5050:80"

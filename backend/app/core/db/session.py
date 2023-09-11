@@ -1,4 +1,7 @@
+import os
+
 from contextvars import ContextVar, Token
+from importlib import import_module
 from typing import Union
 
 from sqlalchemy.ext.asyncio import (
@@ -50,3 +53,28 @@ session: Union[AsyncSession, async_scoped_session] = async_scoped_session(
     scopefunc=get_session_context,
 )
 Base = declarative_base()
+
+
+async def init_models():
+    if config.ENV == 'prod':
+        return
+
+    async with engines['writer'].begin() as conn:
+        # Drop and create all Base classes
+        for _, _, files in os.walk('app/models'):
+            for file in files:
+                if not file.endswith('.py') or file.startswith('__'):
+                    continue
+                module_name = f'app.models.{file[:-3]}'
+                module = import_module(module_name)
+                for name in dir(module):
+                    item = getattr(module, name)
+                    if not hasattr(item, '__module__'):
+                        continue
+                    if not hasattr(item, 'metadata'):
+                        continue
+                    if not item.__module__.startswith(module_name):
+                        continue
+
+                    await conn.run_sync(item.metadata.drop_all)
+                    await conn.run_sync(item.metadata.create_all)

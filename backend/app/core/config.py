@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings
 
 
 class Config(BaseSettings):
-    ENV: str = "development"
+    ENV: str = "dev"
     DEBUG: bool = True
     WRITER_DB_URL: str = "sqlite://:memory:"  # Default is a sqlite in memory
     READER_DB_URL: str = "sqlite://:memory:"  # Default is a sqlite in memory

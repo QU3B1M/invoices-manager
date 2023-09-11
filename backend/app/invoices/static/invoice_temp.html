@@ -1,0 +1,148 @@
+<!-- HTML Jinja2 Template for IT services provider Invoices -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #333;
+        }
+        .invoice {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .invoice .invoice-header {
+            padding: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .invoice .invoice-header .invoice-logo {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .invoice .invoice-header .invoice-logo img {
+            max-height: 50px;
+        }
+        .invoice .invoice-header .invoice-from {
+            float: left;
+            width: 45%;
+        }
+        .invoice .invoice-header .invoice-from .invoice-from-company {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .invoice .invoice-header .invoice-from .invoice-from-address {
+            margin-top: 10px;
+        }
+        .invoice .invoice-header .invoice-from .invoice-from-address .invoice-from-address-line {
+            margin-bottom: 2px;
+        }
+        .invoice .invoice-header .invoice-from .invoice-from-address .invoice-from-address-city {
+            margin-top: 2px;
+        }
+        .invoice .invoice-header .invoice-to {
+            float: right;
+            width: 45%;
+            text-align: right;
+        }
+        .invoice .invoice-header .invoice-to .invoice-to-company {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .invoice .invoice-header .invoice-to .invoice-to-address {
+            margin-top: 10px;
+        }
+        .invoice .invoice-header .invoice-to .invoice-to-address .invoice-to-address-line {
+            margin-bottom: 2px;
+        }
+        .invoice .invoice-header .invoice-to .invoice-to-address .invoice-to-address-city {
+            margin-top: 2px;
+        }
+        .invoice .invoice-header .invoice-date {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .invoice .invoice-header .invoice-date .invoice-due-date {
+            margin-top: 5px;
+            font-size: 14px;
+            font-weight: normal;
+        } 
+    </style>
+</head>
+<body>
+    <div class="invoice">
+        <div class="invoice-header">
+            <div class="invoice-logo">
+                <img src="{{ invoice_logo }}" alt="Invoice Logo">
+            </div>
+            <div class="invoice-from">
+                <div class="invoice-from-company">{{ invoice_from_company }}</div>
+                <div class="invoice-from-address">
+                    <div class="invoice-from-address-line">{{ invoice_from_address_line }}</div>
+                    <div class="invoice-from-address-city">{{ invoice_from_address_city }}</div>
+                </div>
+            </div>
+            <div class="invoice-to">
+                <div class="invoice-to-company">{{ invoice_to_company }}</div>
+                <div class="invoice-to-address">
+                    <div class="invoice-to-address-line">{{ invoice_to_address_line }}</div>
+                    <div class="invoice-to-address-city">{{ invoice_to_address_city }}</div>
+                </div>
+            </div>
+            <div class="invoice-date">
+                <div class="invoice-date-label">Invoice Date</div>
+                <div class="invoice-date-value">{{ invoice_date }}</div>
+                <div class="invoice-due-date-label">Due Date</div>
+                <div class="invoice-due-date-value">{{ invoice_due_date }}</div>
+            </div>
+        </div>
+        <div class="invoice-body">
+            <table class="invoice-items">
+                <thead>
+                    <tr>
+                        <th class="invoice-item-name">Item</th>
+                        <th class="invoice-item-quantity">Quantity</th>
+                        <th class="invoice-item-price">Price</th>
+                        <th class="invoice-item-total">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in invoice_items %}
+                    <tr>
+                        <td class="invoice-item-name">{{ item.name }}</td>
+                        <td class="invoice-item-quantity">{{ item.quantity }}</td>
+                        <td class="invoice-item-price">{{ item.price }}</td>
+                        <td class="invoice-item-total">{{ item.total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="invoice-footer">
+            <!-- <div class="invoice-notes">
+                <div class="invoice-notes-label">Notes</div>
+                <div class="invoice-notes-value">{{ invoice_notes }}</div>
+            </div> -->
+            <div class="invoice totals">
+                <div class="invoice-total">
+                    <div class="invoice-total-label">Total</div>
+                    <div class="invoice-total-value">{{ invoice_total }}</div>
+                </div>
+                <div class="invoice-tax">
+                    <div class="invoice-tax-label">Tax</div>
+                    <div class="invoice-tax-value">{{ invoice_tax }}</div>
+                </div>
+                <div class="invoice-grand-total">
+                    <div class="invoice-grand-total-label">Grand Total</div>
+                    <div class="invoice-grand-total-value">{{ invoice_grand_total }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
