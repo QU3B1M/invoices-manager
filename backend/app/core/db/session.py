@@ -65,7 +65,7 @@ async def init_models():
             for file in files:
                 if not file.endswith('.py') or file.startswith('__'):
                     continue
-                module_name = f'app.core.models.{file[:-3]}'
+                module_name = f'app.models.{file[:-3]}'
                 module = import_module(module_name)
                 for name in dir(module):
                     item = getattr(module, name)

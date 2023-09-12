@@ -9,12 +9,13 @@ class User(Base):
     __tablename__ = 'User'
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    name: Mapped[str] = mapped_column(nullable=False)
+    firstname: Mapped[str] = mapped_column(nullable=False)
+    surname: Mapped[str] = mapped_column(nullable=False)
+    company_name: Mapped[str] = mapped_column(nullable=True)
     address: Mapped[str] = mapped_column(nullable=False)
     phone: Mapped[str] = mapped_column(nullable=True)
     email: Mapped[str] = mapped_column(nullable=False)
     website: Mapped[str] = mapped_column(nullable=True)
-    description: Mapped[str] = mapped_column(nullable=True)
     hashed_password: Mapped[str] = mapped_column()
     is_active: Mapped[bool] = mapped_column(default=True)
 

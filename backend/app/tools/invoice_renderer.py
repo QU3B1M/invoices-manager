@@ -7,7 +7,7 @@ import os
 from jinja2 import Environment, FileSystemLoader
 
 from app.api.schemas import Invoice
-from app.core.repositories import InvoiceRepository
+from app.repositories import InvoiceRepository
 
 
 async def render(invoice: Invoice) -> Invoice:

@@ -1,5 +1,5 @@
-from app.core.models import Invoice
-from app.core.repositories.base import BaseRepository
+from app.models import Invoice
+from app.repositories.base import BaseRepository
 
 
 class InvoiceRepository(BaseRepository[Invoice]):
