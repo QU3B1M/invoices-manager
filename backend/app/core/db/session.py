@@ -61,11 +61,11 @@ async def init_models():
 
     async with engines['writer'].begin() as conn:
         # Drop and create all Base classes
-        for _, _, files in os.walk('app/models'):
+        for _, _, files in os.walk('app/core/models'):
             for file in files:
                 if not file.endswith('.py') or file.startswith('__'):
                     continue
-                module_name = f'app.models.{file[:-3]}'
+                module_name = f'app.core.models.{file[:-3]}'
                 module = import_module(module_name)
                 for name in dir(module):
                     item = getattr(module, name)
