@@ -61,7 +61,7 @@ async def init_models():
 
     async with engines['writer'].begin() as conn:
         # Drop and create all Base classes
-        for _, _, files in os.walk('app/core/models'):
+        for _, _, files in os.walk('app/models'):
             for file in files:
                 if not file.endswith('.py') or file.startswith('__'):
                     continue

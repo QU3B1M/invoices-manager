@@ -1,7 +1,8 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field
 
-from . import Customer, User
+from .customer import Customer
+from .user import UserDB
 
 
 class Invoice(BaseModel):
@@ -19,5 +20,5 @@ class Invoice(BaseModel):
     description: str
     invoice_html: str = None
 
-    invoice_from: User
+    invoice_from: UserDB
     invoice_to: Customer

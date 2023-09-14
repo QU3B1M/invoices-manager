@@ -25,7 +25,7 @@ services_to_invoice = Table(
 class Service(Base):
     __tablename__ = 'Service'
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False)
     description: Mapped[str] = mapped_column(nullable=False)
     price: Mapped[float] = mapped_column(nullable=False)
@@ -52,5 +52,5 @@ class Invoice(Base):
 
     invoice_from_id: Mapped[int] = mapped_column(ForeignKey('User.id'))
     invoice_from: Mapped['User'] = relationship(back_populates='invoices')
-    invoice_to_id: Mapped[int] = relationship(ForeignKey('Customer.id'))
+    invoice_to_id: Mapped[int] = mapped_column(ForeignKey('Customer.id'))
     invoice_to: Mapped['Customer'] = relationship(back_populates='invoices')

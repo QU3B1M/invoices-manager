@@ -13,6 +13,7 @@ class BaseRepository(Generic[ModelType]):
     """Base Repository with all the default methods to handle any CRUD."""
 
     model: ModelType
+    session = session
 
     @classmethod
     async def get(cls, *, id: int) -> ModelType | None:
@@ -59,11 +60,12 @@ class BaseRepository(Generic[ModelType]):
             SQLAlchemy model Object.
         """
         encoded_data = jsonable_encoder(data)
-        print(encoded_data, flush=True)
         db_obj = cls.model(**encoded_data)
+
         session.add(db_obj)
         session.commit()
         session.refresh(db_obj)
+
         return db_obj
 
     @classmethod
