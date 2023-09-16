@@ -1,8 +1,8 @@
-from pydantic import BaseModel, ConfigDict, SecretStr, EmailStr
+from pydantic import BaseModel, ConfigDict, Field, SecretStr, EmailStr
 
 
 class UserBase(BaseModel):
-    """User base model."""
+    '''User base model.'''
     firstname: str
     surname: str
     nickname: str | None = None
@@ -14,15 +14,15 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    """User create model."""
+    '''User create model.'''
     password: SecretStr
     password_repeat: SecretStr
 
 
 class UserDB(UserBase):
-    """User model."""
+    '''User model.'''
     model_config = ConfigDict(from_attributes=True)
 
-    # id: int
+    id: int
     hashed_password: SecretStr
-    invoices: list['Invoice'] = []
+    # invoices: list['Invoice'] | None = Field(default_factory=list)

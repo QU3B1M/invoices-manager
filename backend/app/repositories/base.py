@@ -1,12 +1,20 @@
 from typing import Generic, TypeVar
 
 from fastapi.encoders import jsonable_encoder
+from pydantic import BaseModel
+from sqlalchemy import delete, select, update
 from sqlalchemy.orm import Session
 
 from app.core.db.session import Base, session
 
 
 ModelType = TypeVar("ModelType", bound=Base)
+
+
+class SynchronizeSessionEnum(BaseModel):
+    FETCH = "fetch"
+    EVALUATE = "evaluate"
+    FALSE = False
 
 
 class BaseRepository(Generic[ModelType]):
@@ -28,7 +36,10 @@ class BaseRepository(Generic[ModelType]):
         ------
             SQLAlchemy model Object.
         """
-        return session.query(cls.model).filter(cls.model.id == id).first()
+        query = select(cls.model).where(cls.model.id == id)
+        result = await session.execute(query)
+
+        return result.scalars().first()
 
     @classmethod
     async def get_multi(cls, *, skip: int = 0, limit: int = 100) -> list[ModelType]:
@@ -44,7 +55,10 @@ class BaseRepository(Generic[ModelType]):
         ------
             list of SQLAlchemy model Objects.
         """
-        return session.query(cls.model).offset(skip).limit(limit).all()
+        query = select(cls.model).limit(limit).offset(skip)
+        result = await session.execute(query)
+
+        return result.scalars().all()
 
     @classmethod
     async def create(cls, data: dict) -> ModelType:
@@ -62,14 +76,10 @@ class BaseRepository(Generic[ModelType]):
         encoded_data = jsonable_encoder(data)
         db_obj = cls.model(**encoded_data)
 
-        session.add(db_obj)
-        session.commit()
-        session.refresh(db_obj)
-
-        return db_obj
+        return session.add(db_obj)
 
     @classmethod
-    async def update(cls, target: ModelType, new_data: dict) -> ModelType:
+    async def update(cls, id: int, new_data: dict,  synchronize: SynchronizeSessionEnum = False) -> None:
         """
         Default method to Update an Object from the DataBase.
 
@@ -82,21 +92,20 @@ class BaseRepository(Generic[ModelType]):
         ------
             SQLAlchemy model Object.
         """
-        obj_data = jsonable_encoder(target)
         if isinstance(new_data, dict):
             update_data = new_data
         else:
             update_data = new_data.model_dump(exclude_unset=True)
-        for field in obj_data:
-            if field in update_data:
-                setattr(target, field, update_data[field])
-        session.add(target)
-        session.commit()
-        session.refresh(target)
-        return target
+        query = (
+            update(cls.model)
+            .where(cls.model.id == id)
+            .values(**update_data)
+            .execution_options(synchronize_session=synchronize)
+        )
+        await session.execute(query)
 
     @classmethod
-    async def remove(cls, id: int) -> ModelType:
+    async def remove(cls, id: int, synchronize: SynchronizeSessionEnum = False) -> ModelType:
         """
         Default method to Delete an Object from the DataBase.
 
@@ -109,7 +118,9 @@ class BaseRepository(Generic[ModelType]):
         ------
             SQLAlchemy model Object.
         """
-        obj = session.query(cls.model).get(id)
-        session.delete(obj)
-        session.commit()
-        return obj
+        query = (
+            delete(cls.model)
+            .where(cls.model.id == id)
+            .execution_options(synchronize_session=synchronize)
+        )
+        await session.execute(query)
